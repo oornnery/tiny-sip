@@ -1,0 +1,49 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.extraPaths": ["app"],
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["testes"],
+  // Ruff: usar binário do ambiente (gerenciado pelo UV)
+  "ruff.importStrategy": "fromEnvironment",
+  "ruff.path": ["uv"],
+  // Prefer Ruff fixes on save (via code actions) e rodar via UV
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[toml]": { "editor.defaultFormatter": "tamasfe.even-better-toml" },
+  "[yaml]": { "editor.defaultFormatter": "redhat.vscode-yaml" },
+  "[markdown]": { "editor.defaultFormatter": "DavidAnson.vscode-markdownlint" },
+  "[sql]": { "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode" },
+  "[shellscript]": { "editor.defaultFormatter": "foxundermoon.shell-format" },
+  "git.enableCommitSigning": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    ".venv": true,
+    "dist": true,
+    "build": true
+  },
+  "extensions.ignoreRecommendations": false,
+  // Code Runner via UV
+  "code-runner.executorMap": {
+    "python": "uv run python -u"
+  },
+  "code-runner.executorMapByFileExtension": {
+    ".py": "uv run python -u"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.saveAllFilesBeforeRun": true,
+  // GitHub Copilot chat agent settings
+  "github.copilot.chat.agent.runTasks": true,
+  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.chat.agent.autoFix": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.summarizeAgentConversationHistory.enabled": true
+}

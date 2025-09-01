@@ -1,0 +1,117 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "uv: lint",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ruff", "check", ".", "--fix"],
+      "problemMatcher": ["$eslint-compact"],
+      "group": "build"
+    },
+    {
+      "label": "uv: format",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ruff", "format", "."],
+      "group": "build"
+    },
+    {
+      "label": "uv: type-check",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ty", "check", "."],
+      "group": "build"
+    },
+    {
+      "label": "uv: tests",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "pytest", "--maxfail=1", "--disable-warnings", "-q"],
+      "group": "test"
+    },
+    {
+      "label": "quality: all",
+      "type": "shell",
+      "command": "uv",
+      "args": [
+        "run",
+        "sh",
+        "-c",
+        "ruff format . && ruff check . --fix && ty check . && pytest --maxfail=1 --disable-warnings -q"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "vscode: install extensions",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "python", ".vscode/install_extensions.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "task: format",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "format"],
+      "group": "build"
+    },
+    {
+      "label": "task: lint",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "lint"],
+      "group": "build"
+    },
+    {
+      "label": "task: type",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "type"],
+      "group": "build"
+    },
+    {
+      "label": "task: test",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "test"],
+      "group": "test"
+    },
+    {
+      "label": "task: quality",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "quality"],
+      "group": "build"
+    },
+    {
+      "label": "task: cov",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "cov"],
+      "group": "test"
+    },
+    {
+      "label": "task: app",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "app"],
+      "group": "none"
+    },
+    {
+      "label": "task: docs-serve",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "docs-serve"],
+      "isBackground": true,
+      "group": "none"
+    },
+    {
+      "label": "task: docs-build",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "docs-build"],
+      "group": "build"
+    }
+  ]
+}

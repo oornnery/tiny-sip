@@ -1,0 +1,32 @@
+{
+  "servers": {
+    "sequentialthinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "type": "stdio"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {
+        "MEMORY_FILE_PATH": "${input:memory_file_path}"
+      }
+    },
+    "context7": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/context7"]
+    },
+    "playwright": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/playwright"]
+    }
+  },
+  "inputs": [
+    {
+      "id": "memory_file_path",
+      "type": "promptString",
+      "description": "Path to the memory storage file (optional)",
+      "password": false
+    }
+  ]
+}

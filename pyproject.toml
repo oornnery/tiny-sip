@@ -1,0 +1,52 @@
+[project]
+name = "tiny-sip"
+version = "0.1.0"
+description = "A tiny SIP client library"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+    "rich>=14.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.11",
+    "taskipy>=1.14.1",
+    "ty>=0.0.1a19",
+]
+
+# Ruff configuration
+[tool.ruff]
+line-length = 80
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E203"]
+
+# Type checker (ty)
+## ty: usando configuração padrão (sem seção)
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--strict-markers --tb=short"
+testpaths = ["testes"]
+
+# Task runner (taskipy)
+[tool.taskipy.tasks]
+format = "ruff format ."
+lint = "ruff check . --fix"
+type = "ty check ."
+test = "pytest -q"
+quality = "task format && task lint && task type && task test"
+cov = "pytest --cov=. --cov-report=xml -q"
+#app = "python app/main.py"
+#docs-serve = "mkdocs serve -a 0.0.0.0:8001"
+#docs-build = "mkdocs build --strict --clean --site-dir site"
