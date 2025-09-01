@@ -1,31 +1,179 @@
 name: CI
+
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, develop]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: "0 2 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "1"
+  PY_COLORS: "1"
+
 jobs:
-  build-and-test:
+  lint:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Set up UV
         uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Sync dependencies (locked if available)
-        run: |
-          if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
+
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Check formatting with Ruff
+        run: uv run ruff format --check .
+
       - name: Lint with Ruff
         run: uv run ruff check .
+
       - name: Type check with ty
         run: uv run ty check .
+
+  test:
+    name: Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12", "3.13"]
+        include:
+          - os: ubuntu-latest
+            python-version: "3.13"
+            coverage: true
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
+
       - name: Run tests
-        run: uv run pytest --maxfail=1 --disable-warnings --cov=. --cov-report=xml -q
-      - name: Upload coverage
-        if: success()
+        run: uv run pytest --maxfail=1 --disable-warnings -v
+
+      - name: Run tests with coverage
+        if: matrix.coverage
+        run: uv run pytest --cov=tinysip --cov-report=xml --cov-report=html --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        if: matrix.coverage
         uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage reports
+        if: matrix.coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage.xml
+            htmlcov/
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Run security scan with Ruff
+        run: uv run ruff check --select S --ignore S101 .
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Build package
+        run: uv build
+
+      - name: Upload built packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-packages
+          path: dist/
+
+      - name: Test package install
+        run: |
+          uv pip install dist/*.whl
+          uv run python -c "import tinysip; print('Package import successful')"
+
+  pre-commit:
+    name: Pre-commit Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Run pre-commit
+        run: uv run pre-commit run --all-files

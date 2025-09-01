@@ -78,18 +78,39 @@
       "group": "test"
     },
     {
-      "label": "task: quality",
+      "label": "task: test-v",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "task", "quality"],
+      "args": ["run", "task", "test-v"],
+      "group": "test"
+    },
+    {
+      "label": "task: test-cov",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "test-cov"],
+      "group": "test"
+    },
+    {
+      "label": "task: test-fast",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "test-fast"],
+      "group": "test"
+    },
+    {
+      "label": "task: security",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "security"],
       "group": "build"
     },
     {
-      "label": "task: cov",
+      "label": "task: all",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "task", "cov"],
-      "group": "test"
+      "args": ["run", "task", "all"],
+      "group": "build"
     },
     {
       "label": "task: app",
@@ -111,6 +132,27 @@
       "type": "shell",
       "command": "uv",
       "args": ["run", "task", "docs-build"],
+      "group": "build"
+    },
+    {
+      "label": "task: pre-commit",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "pre-commit"],
+      "group": "build"
+    },
+    {
+      "label": "task: pre-commit-install",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "task", "pre-commit-install"],
+      "group": "build"
+    },
+    {
+      "label": "pre-commit: run all",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "pre-commit", "run", "--all-files"],
       "group": "build"
     }
   ]

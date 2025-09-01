@@ -3,7 +3,6 @@
     "ms-python.python",
     "ms-python.debugpy",
     "ms-python.vscode-python-envs",
-    // "ms-python.vscode-pylance",
     "the0807.uv-toolkit",
     "charliermarsh.ruff",
     "astral-sh.ty",
