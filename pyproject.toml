@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28.1",
+    "pyaudio>=0.2.14",
     "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",
     "rich>=14.1.0",
@@ -31,7 +32,7 @@ dev = [
 
 # Ruff configuration
 [tool.ruff]
-line-length = 80
+line-length = 100
 target-version = "py313"
 
 [tool.ruff.lint]
